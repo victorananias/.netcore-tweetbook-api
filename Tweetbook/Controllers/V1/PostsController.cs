@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Tweetbook.Contracts.v1;
+using Tweetbook.Contracts.V1.Requests;
 using Tweetbook.Domain;
 using Tweetbook.Services;
 
@@ -36,6 +37,25 @@ namespace Tweetbook.Controllers.v1
                 return NotFound();
             }
 
+            return Ok(post);
+        }
+
+        [HttpPut(ApiRoutes.Posts.Update)]
+        public IActionResult Update([FromRoute] Guid postId, [FromBody] UpdatePostRequest request)
+        {
+            var post = new Post
+            {
+                Id = postId,
+                Name = request.Name
+            };
+
+            var updated = _postsService.UpdatePost(post);
+
+            if (!updated)
+            {
+                return NotFound();
+            }
+            
             return Ok(post);
         }
 
