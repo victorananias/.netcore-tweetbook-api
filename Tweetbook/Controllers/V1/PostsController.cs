@@ -6,29 +6,37 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Tweetbook.Contracts.v1;
 using Tweetbook.Domain;
+using Tweetbook.Services;
 
 namespace Tweetbook.Controllers.v1
 {
     [ApiController]
     public class PostsController : ControllerBase
     {
-        private List<Post> _posts;
+        private readonly IPostsService _postsService;
 
-        public PostsController()
+        public PostsController(IPostsService postsService)
         {
-            _posts = new List<Post>();
-
-            for (int i = 0; i <  6; i++)
-            {
-                _posts.Add(new Post { Id = Guid.NewGuid().ToString() });
-            }
+            _postsService = postsService;
         }
-
 
         [HttpGet(ApiRoutes.Posts.GetAll)]
         public IActionResult GetAll()
         {
-            return Ok(_posts);
+            return Ok(_postsService.GetAll());
+        }
+
+        [HttpGet(ApiRoutes.Posts.Get)]
+        public IActionResult Get([FromRoute]Guid postId)
+        {
+            var post = _postsService.GetPostById(postId);
+
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(post);
         }
 
         [HttpPost(ApiRoutes.Posts.Create)]
