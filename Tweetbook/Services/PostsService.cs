@@ -39,7 +39,7 @@ namespace Tweetbook.Services
                 return false;
             }
 
-            var index = _posts.FindIndex(p => p.Id == postToUpdate.Id);
+            var index = _posts.FindIndex(p => p.Id.Equals(postToUpdate.Id));
 
             _posts[index] = postToUpdate;
 

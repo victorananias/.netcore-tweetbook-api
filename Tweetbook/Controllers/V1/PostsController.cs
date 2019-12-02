@@ -63,19 +63,19 @@ namespace Tweetbook.Controllers.v1
         [HttpPost(ApiRoutes.Posts.Create)]
         public IActionResult Create([FromBody] CreatePostRequest postRequest)
         {
-            var post = new Post() {Id = postRequest.Id};
+            var post = new Post() {Id = postRequest.Id, Name = postRequest.Name};
 
-            if (string.IsNullOrEmpty(post.Id))
+            if (post.Id == Guid.Empty)
             {
-                post.Id = Guid.NewGuid().ToString();
+                post.Id = Guid.NewGuid();
             }
             
-            _posts.Add(post);
+            _postsService.GetAll().Add(post);
 
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
-            var locationUrl = $"{baseUrl}/{ApiRoutes.Posts.Get}".Replace("{postId}", post.Id);
+            var locationUrl = $"{baseUrl}/{ApiRoutes.Posts.Get}".Replace("{postId}", post.Id.ToString());
 
-            var response = new PostResponse {Id = post.Id};
+            var response = new PostResponse {Id = post.Id, Name = post.Name};
 
             return Created(locationUrl, response);
         }
