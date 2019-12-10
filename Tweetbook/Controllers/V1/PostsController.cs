@@ -41,6 +41,27 @@ namespace Tweetbook.Controllers.v1
             return Ok(post);
         }
 
+
+        [HttpPost(ApiRoutes.Posts.Create)]
+        public IActionResult Create([FromBody] CreatePostRequest postRequest)
+        {
+            var post = new Post() { Id = postRequest.Id, Name = postRequest.Name };
+
+            if (post.Id == Guid.Empty)
+            {
+                post.Id = Guid.NewGuid();
+            }
+
+            _postsService.GetAll().Add(post);
+
+            var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
+            var locationUrl = $"{baseUrl}/{ApiRoutes.Posts.Get}".Replace("{postId}", post.Id.ToString());
+
+            var response = new PostResponse { Id = post.Id, Name = post.Name };
+
+            return Created(locationUrl, response);
+        }
+
         [HttpPut(ApiRoutes.Posts.Update)]
         public IActionResult Update([FromRoute] Guid postId, [FromBody] UpdatePostRequest request)
         {
@@ -60,24 +81,15 @@ namespace Tweetbook.Controllers.v1
             return Ok(post);
         }
 
-        [HttpPost(ApiRoutes.Posts.Create)]
-        public IActionResult Create([FromBody] CreatePostRequest postRequest)
+        [HttpDelete(ApiRoutes.Posts.Delete)]
+        public IActionResult Delete([FromRoute] Guid postId)
         {
-            var post = new Post() {Id = postRequest.Id, Name = postRequest.Name};
-
-            if (post.Id == Guid.Empty)
+            if (!_postsService.DeletePost(postId))
             {
-                post.Id = Guid.NewGuid();
+                return NotFound();
             }
-            
-            _postsService.GetAll().Add(post);
 
-            var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
-            var locationUrl = $"{baseUrl}/{ApiRoutes.Posts.Get}".Replace("{postId}", post.Id.ToString());
-
-            var response = new PostResponse {Id = post.Id, Name = post.Name};
-
-            return Created(locationUrl, response);
+            return NoContent();
         }
     }
 }
