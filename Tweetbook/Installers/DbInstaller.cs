@@ -19,7 +19,8 @@ namespace Tweetbook.Installers
                     configuration.GetConnectionString("DefaultConnection")
                 )
             );
-            services.AddSingleton<IPostsService>(new PostsService());
+
+            services.AddScoped<IPostsService, PostsService>();
         }
     }
 }

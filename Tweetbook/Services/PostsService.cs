@@ -2,62 +2,63 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Tweetbook.Data;
 using Tweetbook.Domain;
 
 namespace Tweetbook.Services
 {
     public class PostsService: IPostsService
     {
-        private readonly List<Post> _posts;
+        private readonly ApplicationDbContext _context;
 
-        public PostsService()
+        public PostsService(ApplicationDbContext context)
         {
-            _posts = new List<Post>();
-
-            for (int i = 0; i < 6; i++)
-            {
-                _posts.Add(new Post { Id = Guid.NewGuid(), Name = $"Post name: {i}" });
-            }
+            _context = context;
         }
 
-        public List<Post> GetAll()
+        public async Task<List<Post>> GetAllAsync()
         {
-            return _posts;
+            return await _context.Posts.ToListAsync();
         }
 
-        public Post GetPostById(Guid postId)
+        public async Task<Post> GetPostByIdAsync(Guid postId)
         {
-            return _posts.SingleOrDefault(p => p.Id == postId);
+            return await _context.Posts.SingleOrDefaultAsync(p => p.Id == postId);
         }
 
-        public bool UpdatePost(Post postToUpdate)
+        public async Task<bool> CreateAsync(Post post)
         {
-            var exists = GetPostById(postToUpdate.Id) != null;
+            await _context.Posts.AddAsync(post);
 
-            if (!exists)
-            {
-                return false;
-            }
+            var created = await _context.SaveChangesAsync();
 
-            var index = _posts.FindIndex(p => p.Id.Equals(postToUpdate.Id));
-
-            _posts[index] = postToUpdate;
-
-            return true;
+            return created > 0;
         }
 
-        public bool DeletePost(Guid postId)
+        public async Task<bool> UpdatePostAsync(Post postToUpdate)
         {
-            var post = GetPostById(postId);
+            _context.Posts.Update(postToUpdate);
+
+            var updated = await _context.SaveChangesAsync();
+
+            return updated > 0;
+        }
+
+        public async Task<bool> DeletePostAsync(Guid postId)
+        {
+            var post = await GetPostByIdAsync(postId);
 
             if (post == null)
             {
                 return false;
             }
 
-            _posts.Remove(post);
+            _context.Posts.Remove(post);
 
-            return true;
+            var deleted = await _context.SaveChangesAsync();
+
+            return deleted > 0;
         }
     }
 }
