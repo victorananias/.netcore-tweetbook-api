@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,11 +10,12 @@ using Tweetbook.Contracts.v1;
 using Tweetbook.Contracts.V1.Requests;
 using Tweetbook.Contracts.V1.Responses;
 using Tweetbook.Domain;
+using Tweetbook.Extensions;
 using Tweetbook.Services;
 
 namespace Tweetbook.Controllers.v1
 {
-    [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class PostsController : ControllerBase
     {
         private readonly IPostsService _postsService;
@@ -46,7 +48,7 @@ namespace Tweetbook.Controllers.v1
         [HttpPost(ApiRoutes.Posts.Create)]
         public async Task<IActionResult> Create([FromBody] CreatePostRequest postRequest)
         {
-            var post = new Post() { Name = postRequest.Name };
+            var post = new Post() { Name = postRequest.Name, UserId = HttpContext.GetUserId() };
 
             await _postsService.CreateAsync(post);
 
@@ -61,11 +63,18 @@ namespace Tweetbook.Controllers.v1
         [HttpPut(ApiRoutes.Posts.Update)]
         public async Task<IActionResult> Update([FromRoute] Guid postId, [FromBody] UpdatePostRequest request)
         {
-            var post = new Post
+            var userOwnsPost = await _postsService.UserOwnsPostAsync(postId, HttpContext.GetUserId());
+
+            if (userOwnsPost)
             {
-                Id = postId,
-                Name = request.Name
-            };
+                return BadRequest(new
+                {
+                    error = "You do not own this post."
+                });
+            }
+
+            var post = await _postsService.GetPostByIdAsync(postId);
+            post.Name = request.Name;
 
             var updated = await _postsService.UpdatePostAsync(post);
 
@@ -80,6 +89,16 @@ namespace Tweetbook.Controllers.v1
         [HttpDelete(ApiRoutes.Posts.Delete)]
         public async Task<IActionResult> Delete([FromRoute] Guid postId)
         {
+            var userOwnsPost = await _postsService.UserOwnsPostAsync(postId, HttpContext.GetUserId());
+
+            if (userOwnsPost)
+            {
+                return BadRequest(new
+                {
+                    error = "You do not own this post."
+                });
+            }
+
             if (!await _postsService.DeletePostAsync(postId))
             {
                 return NotFound();
