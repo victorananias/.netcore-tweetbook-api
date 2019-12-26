@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Cosmonaut.Attributes;
+using Newtonsoft.Json;
+
+namespace Tweetbook.Domain
+{
+    public class CosmosPostDto
+    {
+        [CosmosPartitionKey]
+        [JsonProperty("id")]
+        public string Id { get; set; }
+        public string Name { get; set; }
+    }
+}
