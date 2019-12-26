@@ -65,7 +65,7 @@ namespace Tweetbook.Controllers.v1
         {
             var userOwnsPost = await _postsService.UserOwnsPostAsync(postId, HttpContext.GetUserId());
 
-            if (userOwnsPost)
+            if (!userOwnsPost)
             {
                 return BadRequest(new
                 {
@@ -91,7 +91,7 @@ namespace Tweetbook.Controllers.v1
         {
             var userOwnsPost = await _postsService.UserOwnsPostAsync(postId, HttpContext.GetUserId());
 
-            if (userOwnsPost)
+            if (!userOwnsPost)
             {
                 return BadRequest(new
                 {
