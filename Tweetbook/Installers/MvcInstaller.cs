@@ -39,6 +39,8 @@ namespace Tweetbook.Installers
                 ValidateLifetime = true
             };
 
+            services.AddSingleton(tokenValidationParameters);
+
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
