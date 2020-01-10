@@ -12,8 +12,7 @@ namespace Tweetbook.Domain
     public class RefreshToken
     {
         [Key]
-        public string Token { get; set; }
-
+        public Guid Token { get; set; }
         public string JwtId { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime ExpiryDate { get; set; }

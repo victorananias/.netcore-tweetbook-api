@@ -236,8 +236,9 @@ namespace Tweetbook.Migrations
 
             modelBuilder.Entity("Tweetbook.Domain.RefreshToken", b =>
                 {
-                    b.Property<string>("Token")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Token")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
