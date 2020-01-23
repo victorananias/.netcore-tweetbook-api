@@ -21,6 +21,7 @@ namespace Tweetbook.Installers
             );
 
             services.AddScoped<IPostsService, PostsService>();
+            services.AddScoped<ITagsService, TagsService>();
         }
     }
 }

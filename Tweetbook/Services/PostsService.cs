@@ -11,10 +11,12 @@ namespace Tweetbook.Services
     public class PostsService: IPostsService
     {
         private readonly ApplicationDbContext _context;
+        private readonly ITagsService _tagsService;
 
-        public PostsService(ApplicationDbContext context)
+        public PostsService(ApplicationDbContext context, ITagsService tagsService)
         {
             _context = context;
+            _tagsService = tagsService;
         }
 
         public async Task<List<Post>> GetAllAsync()
@@ -31,6 +33,8 @@ namespace Tweetbook.Services
         {
             await _context.Posts.AddAsync(post);
 
+            await _tagsService.AddTagsFromPostAsync(post);
+            
             var created = await _context.SaveChangesAsync();
 
             return created > 0;
@@ -64,18 +68,7 @@ namespace Tweetbook.Services
         public async Task<bool> UserOwnsPostAsync(Guid postId, string userId)
         {
             var post = await _context.Posts.AsNoTracking().SingleOrDefaultAsync(p => p.Id == postId);
-
-            if (post == null)
-            {
-                return false;
-            }
-
-            if (post.UserId != userId)
-            {
-                return false;
-            }
-
-            return true;
+            return post == null || post.UserId != userId;
         }
     }
 }

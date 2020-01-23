@@ -32,7 +32,7 @@ namespace Tweetbook.Controllers.v1
         }
 
         [HttpGet(ApiRoutes.Posts.Get)]
-        public async Task<IActionResult> Get([FromRoute]Guid postId)
+        public async Task<IActionResult> Get([FromRoute] Guid postId)
         {
             var post = await _postsService.GetPostByIdAsync(postId);
 
@@ -48,14 +48,21 @@ namespace Tweetbook.Controllers.v1
         [HttpPost(ApiRoutes.Posts.Create)]
         public async Task<IActionResult> Create([FromBody] CreatePostRequest postRequest)
         {
-            var post = new Post() { Name = postRequest.Name, UserId = HttpContext.GetUserId() };
+            var newPostId = Guid.NewGuid();
+            var post = new Post()
+            {
+                Id = newPostId,
+                Name = postRequest.Name,
+                UserId = HttpContext.GetUserId(),
+                Tags = postRequest.Tags.Select(t => new PostTag {PostId = newPostId, TagName = t}).ToList()
+            };
 
             await _postsService.CreateAsync(post);
 
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
             var locationUrl = $"{baseUrl}/{ApiRoutes.Posts.Get}".Replace("{postId}", post.Id.ToString());
 
-            var response = new PostResponse { Id = post.Id, Name = post.Name };
+            var response = new PostResponse {Id = post.Id, Name = post.Name, Tags = post.Tags};
 
             return Created(locationUrl, response);
         }
@@ -82,7 +89,7 @@ namespace Tweetbook.Controllers.v1
             {
                 return NotFound();
             }
-            
+
             return Ok(post);
         }
 

@@ -8,7 +8,6 @@ namespace Tweetbook.Domain
     public class Tag
     {
         [Key]
-        public Guid Id { get; set; }
         public string Name { get; set; }
         public string CreatorId { get; set; }
         [ForeignKey(nameof(CreatorId))]
