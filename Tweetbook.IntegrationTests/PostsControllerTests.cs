@@ -16,7 +16,6 @@ namespace Tweetbook.IntegrationTests
         public async Task GetAll_WithoutAnyPosts_ReturnsEmptyResponse()
         {
             // Arrange
-            await AuthenticateAsync();
             
             // Act
             var response = await TestClient.GetAsync(ApiRoutes.Posts.GetAll);

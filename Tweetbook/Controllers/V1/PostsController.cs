@@ -25,12 +25,14 @@ namespace Tweetbook.Controllers.v1
             _postsService = postsService;
         }
 
+        [AllowAnonymous]
         [HttpGet(ApiRoutes.Posts.GetAll)]
         public async Task<IActionResult> GetAll()
         {
             return Ok(await _postsService.GetAllAsync());
         }
 
+        [AllowAnonymous]
         [HttpGet(ApiRoutes.Posts.Get)]
         public async Task<IActionResult> Get([FromRoute] Guid postId)
         {

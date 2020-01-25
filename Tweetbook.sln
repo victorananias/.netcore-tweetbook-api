@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweetbook", "Tweetbook\Twee
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweetbook.IntegrationTests", "Tweetbook.IntegrationTests\Tweetbook.IntegrationTests.csproj", "{0541DEB1-603D-4BDE-94D3-67FF935AFAAA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{803685A8-B3CF-4F68-90CC-5948910E3985}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{0541DEB1-603D-4BDE-94D3-67FF935AFAAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0541DEB1-603D-4BDE-94D3-67FF935AFAAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0541DEB1-603D-4BDE-94D3-67FF935AFAAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{803685A8-B3CF-4F68-90CC-5948910E3985}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{803685A8-B3CF-4F68-90CC-5948910E3985}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{803685A8-B3CF-4F68-90CC-5948910E3985}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{803685A8-B3CF-4F68-90CC-5948910E3985}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

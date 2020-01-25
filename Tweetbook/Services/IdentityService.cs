@@ -22,7 +22,12 @@ namespace Tweetbook.Services
         private readonly TokenValidationParameters _tokenValidationParameters;
         private readonly ApplicationDbContext _context;
 
-        public IdentityService(UserManager<IdentityUser> userManager, JwtSettings jwtSettings, TokenValidationParameters tokenValidationParameters, ApplicationDbContext context)
+        public IdentityService(
+            UserManager<IdentityUser> userManager, 
+            JwtSettings jwtSettings, 
+            TokenValidationParameters tokenValidationParameters, 
+            ApplicationDbContext context
+        )
         {
             _userManager = userManager;
             _jwtSettings = jwtSettings;

@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tweetbook.Contracts.v1;
 using Tweetbook.Contracts.V1.Requests;
@@ -10,6 +12,7 @@ using Tweetbook.Services;
 
 namespace Tweetbook.Controllers.V1
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class TagsController: ControllerBase
     {
         private readonly ITagsService _tagsService;
@@ -19,6 +22,7 @@ namespace Tweetbook.Controllers.V1
             _tagsService = tagsService;
         }
 
+        [AllowAnonymous]
         [HttpGet(ApiRoutes.Tags.GetAll)]
         public async Task<IActionResult> GetAll()
         {
