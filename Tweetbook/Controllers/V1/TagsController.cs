@@ -30,7 +30,7 @@ namespace Tweetbook.Controllers.V1
         }
 
         [HttpPost(ApiRoutes.Tags.Create)]
-        public async Task<IActionResult> Create(CreateTagRequest request)
+        public async Task<IActionResult> Create([FromBody]CreateTagRequest request)
         {
             var existingTag = await _tagsService.GetTagByNameAsync(request.Name);
 
@@ -42,7 +42,7 @@ namespace Tweetbook.Controllers.V1
             var tag = new Tag
             {
                 Name = request.Name,
-                CreatorId = User.Claims.First(c => c.Type == "Id").Value,
+                CreatorId = User.Claims.First(c => c.Type == "id").Value,
                 CreatedOn = DateTime.UtcNow
             };
 
