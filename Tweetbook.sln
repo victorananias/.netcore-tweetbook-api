@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweetbook", "Tweetbook\Twee
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweetbook.IntegrationTests", "Tweetbook.IntegrationTests\Tweetbook.IntegrationTests.csproj", "{0541DEB1-603D-4BDE-94D3-67FF935AFAAA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{803685A8-B3CF-4F68-90CC-5948910E3985}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tweetbook.UnitTests", "Tweetbook.UnitTests\Tweetbook.UnitTests.csproj", "{803685A8-B3CF-4F68-90CC-5948910E3985}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -7,7 +7,7 @@ using Tweetbook.Domain;
 using Tweetbook.Services;
 using Xunit;
 
-namespace UnitTests
+namespace Tweetbook.UnitTests
 {
     public class TagsServiceTests
     {
