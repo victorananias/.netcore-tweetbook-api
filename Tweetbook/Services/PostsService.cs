@@ -8,7 +8,7 @@ using Tweetbook.Domain;
 
 namespace Tweetbook.Services
 {
-    public class PostsService: IPostsService
+    public class PostsService : IPostsService
     {
         private readonly ApplicationDbContext _context;
         private readonly ITagsService _tagsService;
@@ -21,12 +21,13 @@ namespace Tweetbook.Services
 
         public async Task<List<Post>> GetAllAsync()
         {
-            return await _context.Posts.ToListAsync();
+            return await _context.Posts.Include(p => p.Tags).ToListAsync();
         }
 
         public async Task<Post> GetPostByIdAsync(Guid postId)
         {
-            return await _context.Posts.SingleOrDefaultAsync(p => p.Id == postId);
+            return await _context.Posts.Include(p => p.Tags)
+                .FirstOrDefaultAsync(p => p.Id == postId);
         }
 
         public async Task<bool> CreateAsync(Post post)
@@ -34,7 +35,7 @@ namespace Tweetbook.Services
             await _context.Posts.AddAsync(post);
 
             await _tagsService.AddTagsFromPostAsync(post);
-            
+
             var created = await _context.SaveChangesAsync();
 
             return created > 0;
@@ -67,7 +68,7 @@ namespace Tweetbook.Services
 
         public async Task<bool> UserOwnsPostAsync(Guid postId, string userId)
         {
-            var post = await _context.Posts.AsNoTracking().SingleOrDefaultAsync(p => p.Id == postId);
+            var post = await _context.Posts.AsNoTracking().FirstOrDefaultAsync(p => p.Id == postId);
             return post == null || post.UserId != userId;
         }
     }

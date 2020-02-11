@@ -35,10 +35,11 @@ namespace Tweetbook.UnitTests
                 CreatedOn = DateTime.Now,
                 CreatorId = "testUser"
             };
-            
-            await _tagsService.CreateAsync(tag);
+
             // Act
+            await _tagsService.CreateAsync(tag);
             var tags = await _tagsService.GetAllAsync();
+            
             // Assert
             Assert.Single(tags);
         }
