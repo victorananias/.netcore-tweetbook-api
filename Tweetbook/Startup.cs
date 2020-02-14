@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -65,6 +66,7 @@ namespace Tweetbook
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapGet("/", async context => context.Response.Redirect("/swagger"));
                 endpoints.MapControllers();
             });
         }
