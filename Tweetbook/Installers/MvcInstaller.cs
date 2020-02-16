@@ -15,7 +15,7 @@ using Tweetbook.Services;
 
 namespace Tweetbook.Installers
 {
-    public class MvcInstaller: IInstaller
+    public class MvcInstaller : IInstaller
     {
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
@@ -42,23 +42,28 @@ namespace Tweetbook.Installers
             services.AddSingleton(tokenValidationParameters);
 
             services.AddAuthentication(x =>
+                {
+                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(x =>
+                {
+                    x.SaveToken = true;
+                    x.TokenValidationParameters = tokenValidationParameters;
+                });
+
+            services.AddAuthorization(options =>
             {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(x =>
-            {
-                x.SaveToken = true;
-                x.TokenValidationParameters = tokenValidationParameters;
+                options.AddPolicy("TagViewer", builder => builder.RequireClaim("tags.view", "true"));
             });
 
             services.AddControllers();
 
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1", new OpenApiInfo { Title = "Tweetbook API", Version = "v1" });
-                
+                options.SwaggerDoc("v1", new OpenApiInfo {Title = "Tweetbook API", Version = "v1"});
+
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
                 {
                     Description = "JWT Authorization header using bearer scheme",

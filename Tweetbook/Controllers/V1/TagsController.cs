@@ -22,8 +22,8 @@ namespace Tweetbook.Controllers.V1
             _tagsService = tagsService;
         }
 
-        [AllowAnonymous]
         [HttpGet(ApiRoutes.Tags.GetAll)]
+        [Authorize(Policy = "TagViewer")]
         public async Task<IActionResult> GetAll()
         {
             return Ok(await _tagsService.GetAllAsync());
