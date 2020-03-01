@@ -10,14 +10,14 @@ using Tweetbook.Data;
 namespace Tweetbook.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200122114518_AddPostTags")]
-    partial class AddPostTags
+    [Migration("20200301211305_AddedMigrations")]
+    partial class AddedMigrations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.0")
+                .HasAnnotation("ProductVersion", "3.1.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -46,6 +46,20 @@ namespace Tweetbook.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "e79cb903-16de-4a17-861c-788cb1486abb",
+                            ConcurrencyStamp = "0406e82a-3685-4d39-af52-20c0ced333ea",
+                            Name = "Admin"
+                        },
+                        new
+                        {
+                            Id = "f7a27f75-c81f-4b8f-9d5b-a3bbbc98e1ce",
+                            ConcurrencyStamp = "07f78f3e-c010-4730-b136-530ecd1d0d7e",
+                            Name = "Poster"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -164,10 +178,12 @@ namespace Tweetbook.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -204,10 +220,12 @@ namespace Tweetbook.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128);
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -360,6 +378,12 @@ namespace Tweetbook.Migrations
 
             modelBuilder.Entity("Tweetbook.Domain.PostTag", b =>
                 {
+                    b.HasOne("Tweetbook.Domain.Post", null)
+                        .WithMany("Tags")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Tweetbook.Domain.Tag", "Tag")
                         .WithMany()
                         .HasForeignKey("TagName")
