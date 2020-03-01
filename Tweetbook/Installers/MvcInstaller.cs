@@ -26,9 +26,6 @@ namespace Tweetbook.Installers
 
             services.AddScoped<IIdentityService, IdentityService>();
 
-            services.AddIdentity<IdentityUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
-
             var tokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
@@ -53,11 +50,11 @@ namespace Tweetbook.Installers
                     x.TokenValidationParameters = tokenValidationParameters;
                 });
 
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("TagViewer", builder => builder.RequireClaim("tags.view", "true"));
-            });
-
+            // services.AddAuthorization(options =>
+            // {
+            //     options.AddPolicy("TagViewer", builder => builder.RequireClaim("tags.view", "true"));
+            // });
+            
             services.AddControllers();
 
             services.AddSwaggerGen(options =>
