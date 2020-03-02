@@ -25,6 +25,8 @@ namespace Tweetbook.Installers
             services.AddSingleton(jwtSettings);
 
             services.AddScoped<IIdentityService, IdentityService>();
+            services.AddScoped<IPostsService, PostsService>();
+            services.AddScoped<ITagsService, TagsService>();
 
             var tokenValidationParameters = new TokenValidationParameters
             {

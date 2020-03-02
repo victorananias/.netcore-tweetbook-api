@@ -4,17 +4,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Tweetbook.Domain;
 
 namespace Tweetbook.Data
 {
-    public class ApplicationDbContext: IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext
     {
-
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base (options)
+            : base(options)
         {
         }
+
         public DbSet<Post> Posts { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<PostTag> PostTags { get; set; }
@@ -24,6 +25,12 @@ namespace Tweetbook.Data
         {
             base.OnModelCreating(builder);
             builder.Entity<PostTag>().Ignore(i => i.Post).HasKey(i => new {i.PostId, i.TagName});
+
+            builder.Entity<IdentityRole>().HasData(new List<IdentityRole>
+            {
+                new IdentityRole("ADMIN"),
+                new IdentityRole("POSTER")
+            });
         }
     }
 }
