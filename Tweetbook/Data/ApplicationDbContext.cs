@@ -25,12 +25,6 @@ namespace Tweetbook.Data
         {
             base.OnModelCreating(builder);
             builder.Entity<PostTag>().Ignore(i => i.Post).HasKey(i => new {i.PostId, i.TagName});
-
-            builder.Entity<IdentityRole>().HasData(new List<IdentityRole>
-            {
-                new IdentityRole("ADMIN"),
-                new IdentityRole("POSTER")
-            });
         }
     }
 }

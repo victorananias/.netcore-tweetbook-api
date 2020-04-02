@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Tweetbook.Migrations
 {
-    public partial class AddedMigrations : Migration
+    public partial class AddTables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -236,16 +236,6 @@ namespace Tweetbook.Migrations
                         principalColumn: "Name",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.InsertData(
-                table: "AspNetRoles",
-                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "e79cb903-16de-4a17-861c-788cb1486abb", "0406e82a-3685-4d39-af52-20c0ced333ea", "Admin", null });
-
-            migrationBuilder.InsertData(
-                table: "AspNetRoles",
-                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "f7a27f75-c81f-4b8f-9d5b-a3bbbc98e1ce", "07f78f3e-c010-4730-b136-530ecd1d0d7e", "Poster", null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

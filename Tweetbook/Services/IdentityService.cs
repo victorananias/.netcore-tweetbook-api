@@ -18,6 +18,7 @@ namespace Tweetbook.Services
     public class IdentityService: IIdentityService
     {
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly JwtSettings _jwtSettings;
         private readonly TokenValidationParameters _tokenValidationParameters;
         private readonly ApplicationDbContext _context;
@@ -26,13 +27,13 @@ namespace Tweetbook.Services
             UserManager<IdentityUser> userManager, 
             JwtSettings jwtSettings, 
             TokenValidationParameters tokenValidationParameters, 
-            ApplicationDbContext context
-        )
+            ApplicationDbContext context, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _jwtSettings = jwtSettings;
             _tokenValidationParameters = tokenValidationParameters;
             _context = context;
+            _roleManager = roleManager;
         }
 
         public async Task<AuthenticationResult> RegisterAsync(string email, string password)
@@ -184,7 +185,7 @@ namespace Tweetbook.Services
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
 
-            var claims = new List<Claim>()
+            var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
@@ -193,8 +194,10 @@ namespace Tweetbook.Services
             };
             
             var userClaims = await _userManager.GetClaimsAsync(user);
+            var userRolesClaims = await UserRolesClaimsAsync(user);
             
             claims.AddRange(userClaims);
+            claims.AddRange(userRolesClaims);
             
             var tokenDecriptor = new SecurityTokenDescriptor
             {
@@ -223,6 +226,39 @@ namespace Tweetbook.Services
                 Token = tokenHandler.WriteToken(token),
                 RefreshToken = refreshToken.Token.ToString()
             };
+        }
+
+        private async Task<IEnumerable<Claim>> UserRolesClaimsAsync(IdentityUser user)
+        {
+            var claims = new List<Claim>();
+            var userClaims = await _userManager.GetClaimsAsync(user);
+            claims.AddRange(userClaims);
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+            
+            foreach (var userRole in userRoles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, userRole));
+                
+                var role = await _roleManager.FindByNameAsync(userRole);
+
+                if (role == null)
+                {
+                    continue;
+                }
+                
+                var roleClaims = await _roleManager.GetClaimsAsync(role);
+
+                foreach (var roleClaim in roleClaims)
+                {
+                    if(claims.Contains(roleClaim))
+                        continue;
+
+                    claims.Add(roleClaim);
+                }
+            }
+
+            return claims;
         }
     }
 }

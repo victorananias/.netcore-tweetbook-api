@@ -44,20 +44,6 @@ namespace Tweetbook.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "e79cb903-16de-4a17-861c-788cb1486abb",
-                            ConcurrencyStamp = "0406e82a-3685-4d39-af52-20c0ced333ea",
-                            Name = "Admin"
-                        },
-                        new
-                        {
-                            Id = "f7a27f75-c81f-4b8f-9d5b-a3bbbc98e1ce",
-                            ConcurrencyStamp = "07f78f3e-c010-4730-b136-530ecd1d0d7e",
-                            Name = "Poster"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -15,7 +15,7 @@ using Tweetbook.Services;
 
 namespace Tweetbook.Controllers.v1
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Poster")]
     public class PostsController : ControllerBase
     {
         private readonly IPostsService _postsService;
