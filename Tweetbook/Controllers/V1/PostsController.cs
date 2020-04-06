@@ -15,7 +15,8 @@ using Tweetbook.Services;
 
 namespace Tweetbook.Controllers.v1
 {
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Poster")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Poster")]
     public class PostsController : ControllerBase
     {
         private readonly IPostsService _postsService;
@@ -46,7 +47,7 @@ namespace Tweetbook.Controllers.v1
             return Ok(post);
         }
 
-
+        [Authorize(Policy = "MustWorkForTweetbook")]
         [HttpPost(ApiRoutes.Posts.Create)]
         public async Task<IActionResult> Create([FromBody] CreatePostRequest postRequest)
         {

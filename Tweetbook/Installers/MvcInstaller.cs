@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Tweetbook.Authorization;
 using Tweetbook.Data;
 using Tweetbook.Options;
 using Tweetbook.Services;
@@ -54,9 +56,17 @@ namespace Tweetbook.Installers
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("TagViewer", builder => builder.RequireClaim("tags.view", "true"));
+                options.AddPolicy("MustWorkForTweetbook",
+                    policy => policy.Requirements.Add(new WorksForCompanyRequirement("tweetbook.com")));
             });
-            
+
+            services.AddSingleton<IAuthorizationHandler, WorksForCompanyHandler>();
+
+            // services.AddAuthorization(options =>
+            // {
+            //     options.AddPolicy("TagViewer", builder => builder.RequireClaim("tags.view", "true"));
+            // });
+
             services.AddControllers();
 
             services.AddSwaggerGen(options =>
