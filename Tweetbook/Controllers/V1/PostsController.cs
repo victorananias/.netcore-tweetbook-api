@@ -50,15 +50,7 @@ namespace Tweetbook.Controllers.v1
                 return NotFound();
             }
 
-            var response = new PostResponse
-            {
-                Id = post.Id,
-                Name = post.Name,
-                Tags = post.Tags.Select(t => new TagResponse {Name = t.TagName}),
-                UserId = post.UserId
-            };
-
-            return Ok(response);
+            return Ok(_mapper.Map<PostResponse>(post));
         }
 
         [Authorize(Policy = "MustWorkForTweetbook")]
@@ -79,13 +71,7 @@ namespace Tweetbook.Controllers.v1
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
             var locationUrl = $"{baseUrl}/{ApiRoutes.Posts.Get}".Replace("{postId}", post.Id.ToString());
 
-            var response = new PostResponse
-            {
-                Id = post.Id,
-                Name = post.Name,
-                Tags = post.Tags.Select(t => new TagResponse {Name = t.TagName}),
-                UserId = post.UserId
-            };
+            var response = _mapper.Map<PostResponse>(post);
 
             return Created(locationUrl, response);
         }
@@ -113,13 +99,7 @@ namespace Tweetbook.Controllers.v1
                 return NotFound();
             }
 
-            var response = new PostResponse
-            {
-                Id = post.Id,
-                Name = post.Name,
-                Tags = post.Tags.Select(t => new TagResponse {Name = t.TagName}),
-                UserId = post.UserId
-            };
+            var response = _mapper.Map<PostResponse>(post);
 
             return Ok(response);
         }
