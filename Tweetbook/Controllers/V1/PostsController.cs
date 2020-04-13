@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -20,10 +21,12 @@ namespace Tweetbook.Controllers.v1
     public class PostsController : ControllerBase
     {
         private readonly IPostsService _postsService;
+        private readonly IMapper _mapper;
 
-        public PostsController(IPostsService postsService)
+        public PostsController(IPostsService postsService, IMapper mapper)
         {
             _postsService = postsService;
+            _mapper = mapper;
         }
 
         [AllowAnonymous]
@@ -31,14 +34,8 @@ namespace Tweetbook.Controllers.v1
         public async Task<IActionResult> GetAll()
         {
             var posts = await _postsService.GetAllAsync();
-            var response = posts.Select(p => new PostResponse
-            {
-                Id = p.Id,
-                Name = p.Name,
-                Tags = p.Tags.Select(t => new TagResponse {Name = t.TagName}),
-                UserId = p.UserId
-            });
-            
+            var response = _mapper.Map<List<PostResponse>>(posts);
+
             return Ok(response);
         }
 
@@ -60,7 +57,7 @@ namespace Tweetbook.Controllers.v1
                 Tags = post.Tags.Select(t => new TagResponse {Name = t.TagName}),
                 UserId = post.UserId
             };
-            
+
             return Ok(response);
         }
 
@@ -86,7 +83,7 @@ namespace Tweetbook.Controllers.v1
             {
                 Id = post.Id,
                 Name = post.Name,
-                Tags = post.Tags.Select(t => new TagResponse {Name= t.TagName}),
+                Tags = post.Tags.Select(t => new TagResponse {Name = t.TagName}),
                 UserId = post.UserId
             };
 
@@ -115,12 +112,12 @@ namespace Tweetbook.Controllers.v1
             {
                 return NotFound();
             }
-            
+
             var response = new PostResponse
             {
                 Id = post.Id,
                 Name = post.Name,
-                Tags = post.Tags.Select(t => new TagResponse {Name= t.TagName}),
+                Tags = post.Tags.Select(t => new TagResponse {Name = t.TagName}),
                 UserId = post.UserId
             };
 
