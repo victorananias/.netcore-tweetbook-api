@@ -62,10 +62,10 @@ namespace Tweetbook.Installers
 
             services.AddSingleton<IAuthorizationHandler, WorksForCompanyHandler>();
 
-            // services.AddAuthorization(options =>
-            // {
-            //     options.AddPolicy("TagViewer", builder => builder.RequireClaim("tags.view", "true"));
-            // });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("TagViewer", builder => builder.RequireClaim("tags.view", "true"));
+            });
 
             services.AddControllers();
 

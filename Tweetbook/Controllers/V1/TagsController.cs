@@ -28,7 +28,7 @@ namespace Tweetbook.Controllers.V1
         {
             var tags = await _tagsService.GetAllAsync();
             var response= tags.Select(t => new TagResponse {Name = t.Name});
-            return Ok();
+            return Ok(response);
         }
 
         [HttpPost(ApiRoutes.Tags.Create)]
