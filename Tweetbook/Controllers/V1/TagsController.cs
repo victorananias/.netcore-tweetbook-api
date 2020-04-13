@@ -13,7 +13,7 @@ using Tweetbook.Services;
 namespace Tweetbook.Controllers.V1
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class TagsController: ControllerBase
+    public class TagsController : ControllerBase
     {
         private readonly ITagsService _tagsService;
 
@@ -26,11 +26,13 @@ namespace Tweetbook.Controllers.V1
         [Authorize(Policy = "TagViewer")]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _tagsService.GetAllAsync());
+            var tags = await _tagsService.GetAllAsync();
+            var response= tags.Select(t => new TagResponse {Name = t.Name});
+            return Ok();
         }
 
         [HttpPost(ApiRoutes.Tags.Create)]
-        public async Task<IActionResult> Create([FromBody]CreateTagRequest request)
+        public async Task<IActionResult> Create([FromBody] CreateTagRequest request)
         {
             var existingTag = await _tagsService.GetTagByNameAsync(request.Name);
 
@@ -55,7 +57,7 @@ namespace Tweetbook.Controllers.V1
 
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
             var locationUrl = $"{baseUrl}{ApiRoutes.Tags.GetAll}";
-            
+
             return Created(
                 locationUrl,
                 new CreateTagResponse
@@ -63,7 +65,7 @@ namespace Tweetbook.Controllers.V1
                     Name = tag.Name,
                     CreatedOn = tag.CreatedOn,
                     CreatorId = tag.CreatorId
-                }    
+                }
             );
         }
     }

@@ -30,7 +30,15 @@ namespace Tweetbook.Controllers.v1
         [HttpGet(ApiRoutes.Posts.GetAll)]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _postsService.GetAllAsync());
+            var posts = await _postsService.GetAllAsync();
+            var response = posts.Select(p => new PostResponse
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Tags = p.Tags.Select(t => new TagResponse {Name = t.TagName})
+            });
+            
+            return Ok(response);
         }
 
         [AllowAnonymous]
@@ -44,7 +52,14 @@ namespace Tweetbook.Controllers.v1
                 return NotFound();
             }
 
-            return Ok(post);
+            var response = new PostResponse
+            {
+                Id = post.Id,
+                Name = post.Name,
+                Tags = post.Tags.Select(t => new TagResponse {Name = t.TagName})
+            };
+            
+            return Ok(response);
         }
 
         [Authorize(Policy = "MustWorkForTweetbook")]
@@ -65,7 +80,12 @@ namespace Tweetbook.Controllers.v1
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
             var locationUrl = $"{baseUrl}/{ApiRoutes.Posts.Get}".Replace("{postId}", post.Id.ToString());
 
-            var response = new PostResponse {Id = post.Id, Name = post.Name, Tags = post.Tags};
+            var response = new PostResponse
+            {
+                Id = post.Id,
+                Name = post.Name,
+                Tags = post.Tags.Select(t => new TagResponse {Name= t.TagName})
+            };
 
             return Created(locationUrl, response);
         }
