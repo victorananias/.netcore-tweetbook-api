@@ -35,7 +35,8 @@ namespace Tweetbook.Controllers.v1
             {
                 Id = p.Id,
                 Name = p.Name,
-                Tags = p.Tags.Select(t => new TagResponse {Name = t.TagName})
+                Tags = p.Tags.Select(t => new TagResponse {Name = t.TagName}),
+                UserId = p.UserId
             });
             
             return Ok(response);
@@ -56,7 +57,8 @@ namespace Tweetbook.Controllers.v1
             {
                 Id = post.Id,
                 Name = post.Name,
-                Tags = post.Tags.Select(t => new TagResponse {Name = t.TagName})
+                Tags = post.Tags.Select(t => new TagResponse {Name = t.TagName}),
+                UserId = post.UserId
             };
             
             return Ok(response);
@@ -84,7 +86,8 @@ namespace Tweetbook.Controllers.v1
             {
                 Id = post.Id,
                 Name = post.Name,
-                Tags = post.Tags.Select(t => new TagResponse {Name= t.TagName})
+                Tags = post.Tags.Select(t => new TagResponse {Name= t.TagName}),
+                UserId = post.UserId
             };
 
             return Created(locationUrl, response);
@@ -112,8 +115,16 @@ namespace Tweetbook.Controllers.v1
             {
                 return NotFound();
             }
+            
+            var response = new PostResponse
+            {
+                Id = post.Id,
+                Name = post.Name,
+                Tags = post.Tags.Select(t => new TagResponse {Name= t.TagName}),
+                UserId = post.UserId
+            };
 
-            return Ok(post);
+            return Ok(response);
         }
 
         [HttpDelete(ApiRoutes.Posts.Delete)]
