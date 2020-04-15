@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -12,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Tweetbook.Authorization;
 using Tweetbook.Data;
+using Tweetbook.Filters;
 using Tweetbook.Options;
 using Tweetbook.Services;
 
@@ -67,7 +69,12 @@ namespace Tweetbook.Installers
                 options.AddPolicy("TagViewer", builder => builder.RequireClaim("tags.view", "true"));
             });
 
-            services.AddControllers();
+            services.AddControllers(options =>
+                    options.Filters.Add<ValidationFilter>()
+                )
+                .AddFluentValidation(options =>
+                    options.RegisterValidatorsFromAssemblyContaining<Startup>()
+                );
 
             services.AddSwaggerGen(options =>
             {
